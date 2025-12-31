@@ -1,8 +1,11 @@
 import OpenAI from "openai";
+// import { loadEnv } from 'vite';
+// const env = loadEnv(mode, process.cwd(), '');
+// console.log(import.meta.env.OPENAI_API_KEY)
 
 const openai = new OpenAI({
     dangerouslyAllowBrowser: true,
-    apiKey: process.env.OPENAI_API_KEY,
+    apiKey: import.meta.env.OPENAI_API_KEY,
     });
 
 const askgpt = async function(text, language) {

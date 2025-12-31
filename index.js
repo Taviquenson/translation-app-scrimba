@@ -30,7 +30,7 @@ const translate = async function() {
         isTranslate = !isTranslate;
         languagesEl.classList.toggle("hidden");
         outputEl.classList.toggle("hidden");
-        secondTitle.textContent = "Your translation 👇";
+        secondTitle.textContent = "Your translation";
     }
 }
 
@@ -44,5 +44,5 @@ const startOver = function() {
     isTranslate = !isTranslate;
     languagesEl.classList.toggle("hidden");
     outputEl.classList.toggle("hidden");
-    secondTitle.textContent = "Select language 👇";
+    secondTitle.textContent = "Select language";
 }
