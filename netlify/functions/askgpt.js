@@ -1,16 +1,17 @@
 import OpenAI from "openai";
-// import { loadEnv } from 'vite';
-// const env = loadEnv(mode, process.cwd(), '');
-// console.log(import.meta.env.OPENAI_API_KEY)
 
-const openai = new OpenAI({
-    dangerouslyAllowBrowser: true,
-    apiKey: import.meta.env.OPENAI_API_KEY,
+export default async (request) => {
+    // In the new Netlify runtime, event.body is not always a raw JSON string like it used to.
+    // So you can't just do JSON.parse(event.body), instead use the Request-style handler:
+    const body = await request.json();
+    const { text, language } = body;
+
+    const openai = new OpenAI({
+        dangerouslyAllowBrowser: true,
+        apiKey: process.env.OPENAI_API_KEY,
     });
 
-const askgpt = async function(text, language) {
-    const prompt = `translate the following english text to ${language}: ${text}`
-    
+    const prompt = `translate the following english text to ${language}: ${text}`;
     const response = await openai.chat.completions.create({
         model: "gpt-4o-mini",
         messages: [
@@ -19,7 +20,15 @@ const askgpt = async function(text, language) {
             ],
     });
 
-  return new Response(JSON.stringify(response.choices[0].message));
+    return new Response(
+        JSON.stringify({
+            message: JSON.stringify(response.choices[0].message)
+        }),
+        {
+            status: 200,
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }
+    );
 };
-
-export {askgpt};

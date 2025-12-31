@@ -1,5 +1,3 @@
-import{ askgpt } from './netlify/functions/askgpt.js'
-
 const toggleBtn = document.getElementById("toggle-btn");
 const queryEl = document.getElementById("input");
 const languagesEl = document.getElementById("languages");
@@ -21,11 +19,21 @@ toggleBtn.addEventListener("click", async () => {
 const translate = async function() {
     // Using optional chaining operator (?.) to prevent errors if no radio button is selected.
     const language = document.querySelector('input[name="choice-radios"]:checked')?.value;
-    // console.log("query value:", `'${queryEl.value}'`)
     if (language && queryEl.value) {
-        const response = await askgpt(queryEl.value, language);
-        const data = await response.json();
-        outputEl.value = data.content;
+        const res = await fetch('/.netlify/functions/askgpt', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                text: queryEl.value,
+                language: language
+            }),
+        });
+
+        const data = await res.json();
+
+        outputEl.value = JSON.parse(data.message).content;
         toggleBtn.textContent = 'Start Over';
         isTranslate = !isTranslate;
         languagesEl.classList.toggle("hidden");
